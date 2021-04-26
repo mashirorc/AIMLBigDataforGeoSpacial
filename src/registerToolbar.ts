@@ -12,6 +12,8 @@ export enum ToolbarItemName {
     CopyRegions = "copyRegions",
     CutRegions = "cutRegions",
     PasteRegions = "pasteRegions",
+    ZoomIn = "zoomIn",
+    ZoomOut = "zoomOut",
     RemoveAllRegions = "removeAllRegions",
     PreviousAsset = "navigatePreviousAsset",
     NextAsset = "navigateNextAsset",
@@ -92,6 +94,24 @@ export default function registerToolbar() {
         group: ToolbarItemGroup.Regions,
         type: ToolbarItemType.Action,
         accelerators: ["CmdOrCtrl+V", "CmdOrCtrl+v"],
+    });
+
+    ToolbarItemFactory.register({
+        name: ToolbarItemName.ZoomIn,
+        tooltip: strings.editorPage.toolbar.zoomIn,
+        icon: "fa-search-plus",
+        group: ToolbarItemGroup.Canvas,
+        type: ToolbarItemType.Action,
+        accelerators: ["CmdOrCtrl+Plus", "CmdOrCtrl+plus"],
+    });
+
+    ToolbarItemFactory.register({
+        name: ToolbarItemName.ZoomOut,
+        tooltip: strings.editorPage.toolbar.zoomOut,
+        icon: "fa-search-minus",
+        group: ToolbarItemGroup.Canvas,
+        type: ToolbarItemType.Action,
+        accelerators: ["CmdOrCtrl+Minus", "CmdOrCtrl+minus"],
     });
 
     ToolbarItemFactory.register({

@@ -65,6 +65,8 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         this.editor.onRegionDelete = this.onRegionDelete;
         this.editor.onRegionSelected = this.onRegionSelected;
         this.editor.AS.setSelectionMode({ mode: this.props.selectionMode });
+        this.editor.ZM.isZoomEnabled = true;
+        this.editor.ZM.setMaxZoomScale(10);
 
         window.addEventListener("resize", this.onWindowResize);
     }
@@ -190,6 +192,18 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
             asset.asset.size.height,
         );
         this.addRegions(duplicates);
+    }
+
+    public zoomIn = async () => {
+        console.log("Zoom in button clicked!");
+
+        this.editor.ZM.callbacks.onZoomingIn()
+    }
+
+    public zoomOut = async () => {
+        console.log("Zoom out button clicked!");
+
+        this.editor.ZM.callbacks.onZoomingOut()
     }
 
     public confirmRemoveAllRegions = () => {

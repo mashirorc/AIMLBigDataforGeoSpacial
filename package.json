@@ -56,7 +56,7 @@
         "rimraf": "^2.6.2",
         "shortid": "^2.2.14",
         "video-react": "^0.13.2",
-        "vott-ct": "2.1.24",
+        "vott-ct": "^2.2.25",
         "vott-react": "^0.2.10"
     },
     "scripts": {
