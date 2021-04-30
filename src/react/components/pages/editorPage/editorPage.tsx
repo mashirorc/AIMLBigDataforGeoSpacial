@@ -306,6 +306,8 @@ export default class EditorPage extends React.Component<IEditorPageProps, IEdito
      * @param tag Tag clicked
      */
     private onTagClicked = (tag: ITag): void => {
+        console.log("onTagClicked: Tag clicked = " + tag.name);
+
         this.setState({
             selectedTag: tag.name,
             lockedTags: [],

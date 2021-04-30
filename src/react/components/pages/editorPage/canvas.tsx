@@ -211,7 +211,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         //Zooming without using callbacks onZoomingIn() method
         this.editor.ZM.zoomType = 1;
         var currentZoomLevel = this.editor.ZM.callbacks.getZoomLevel();
-        var newLvl = currentZoomLevel + 1;
+        var newLvl = currentZoomLevel + 0.5;
         this.editor.ZM.callbacks.setZoomLevel(newLvl);
 
         console.log("Zoom Level: " + this.editor.ZM.callbacks.getZoomLevel());
@@ -220,7 +220,13 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
     public zoomOut = async () => {
         console.log("Zoom out button clicked!");
 
-        this.editor.ZM.callbacks.onZoomingOut();
+        //this.editor.ZM.callbacks.onZoomingOut();
+
+        //Zooming without using callbacks onZoomingIn() method
+        this.editor.ZM.zoomType = 2;
+        var currentZoomLevel = this.editor.ZM.callbacks.getZoomLevel();
+        var newLvl = currentZoomLevel - 0.5;
+        this.editor.ZM.callbacks.setZoomLevel(newLvl);
 
         console.log("Zoom Level: " + this.editor.ZM.callbacks.getZoomLevel());
     }    
@@ -473,6 +479,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
      * @param {boolean} multiSelect boolean whether region was selected with multi selection
      * @returns {void}
      */
+    /*
     private onRegionSelected = (id: string, multiSelect: boolean) => {
 
         console.log("OnRegionSelected: w/ id = " + id);
@@ -501,7 +508,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         console.log("Current Selected Region info: \n" + selectedRegions.id + " \n" + selectedRegions.tags + " \n" + selectedRegions.regionData);
 
         return;
-        
+
         //const selectedRegions = this.getSelectedRegions();
 
 
@@ -526,6 +533,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
             this.updateRegions(selectedRegions);
         }
     }
+    */
 
         /**
      * Method called when selecting a region from the editor
@@ -533,8 +541,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
      * @param {boolean} multiSelect boolean whether region was selected with multi selection
      * @returns {void}
      */
-    /*
-    private onRegionSelected = (id: string, multiSelect: boolean) => {
+        private onRegionSelected = (id: string, multiSelect: boolean) => {
         const selectedRegions = this.getSelectedRegions();
         if (this.props.onSelectedRegionsChanged) {
             this.props.onSelectedRegionsChanged(selectedRegions);
@@ -553,7 +560,77 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
             this.updateRegions(selectedRegions);
         }
     }
-    */
+    
+    /*
+    private onRegionSelected = (id: string, multiSelect: boolean) => {
+        const selectedRegions = this.editor.RM.getAllRegions();
+
+        console.log("onRegionSelected: region is selected");
+        console.log("selectedRegions Length = " + selectedRegions.length);
+
+        var selectedRegionsData;
+
+        var id: string;
+        var type: string;
+        var tags: string[];
+        
+        //var points: IPoint[];
+        //var boundingBox: IBoundingBox;
+
+        //boundingBox
+        var left: number;
+        var top: number;
+        var width: number;
+        var height: number;
+
+        //iPoint
+        var x: number;
+        var y: number;
+        
+
+        selectedRegions.forEach(region => {
+            if (region.id === id) {
+                selectedRegionsData = region.regionData;
+                tags.push(region.tags.primary.name);
+                type = "RECTANGLE";
+                left = region.regionData.area.
+
+            }
+        });
+
+
+        this.editor.RM.addRegion(id, selectedRegionsData , tags);
+        console.log("Added to the region!");
+
+        const selectedRegions2 = this.editor.RM.getAllRegions();
+        console.log("selectedRegions Length = " + selectedRegions2.length);
+
+        var selectedRegionIRegions : IRegion[];
+        var iRegion : IRegion;
+
+        iRegion.id = id;
+        iRegion.type = 
+
+
+        if (this.props.onSelectedRegionsChanged) {
+            this.props.onSelectedRegionsChanged(selectedRegions);
+        }
+
+
+
+        if (selectedRegionsData) {
+            //this.template = new Rect(selectedRegionsData.width, selectedRegionsData.height);
+            this.template = new Rect(selectedRegionsData.boundingBox.width, selectedRegionsData.boundingBox.height);
+        }
+
+        if (this.props.lockedTags && this.props.lockedTags.length) {
+            for (const selectedRegion of selectedRegions) {
+                selectedRegion.tags = CanvasHelpers.addAllIfMissing(selectedRegion.tags, this.props.lockedTags);
+            }
+            this.updateRegions(selectedRegions);
+        }
+    } */
+    
 
     private renderChildren = () => {
         return React.cloneElement(this.props.children, {
