@@ -66,8 +66,6 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         this.editor.onRegionDelete = this.onRegionDelete;
         this.editor.onRegionSelected = this.onRegionSelected;
         this.editor.AS.setSelectionMode({ mode: this.props.selectionMode });
-        this.editor.ZM.isZoomEnabled = true;
-        this.editor.ZM.setMaxZoomScale(10);
 
         window.addEventListener("resize", this.onWindowResize);
     }
@@ -146,24 +144,17 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
      * @param selectedTag Tag name
      */
     public applyTag = (tag: string) => {
-
-        console.log("applyTag: tag = " + tag);
-
         const selectedRegions = this.getSelectedRegions();
         const lockedTags = this.props.lockedTags;
         const lockedTagsEmpty = !lockedTags || !lockedTags.length;
-        console.log("lockedTagsEmpty: boolean = " + lockedTagsEmpty);
         const regionsEmpty = !selectedRegions || !selectedRegions.length;
-        console.log("regionsEmpty: boolean = " + regionsEmpty);
         if ((!tag && lockedTagsEmpty) || regionsEmpty) {
-            console.log("Regions is empty! No tags applied");
             return;
         }
 
         let transformer: (tags: string[], tag: string) => string[];
         if (lockedTagsEmpty) {
             // Tag selected while region(s) selected
-            console.log("lockedTagsEmpty - tags selected");
             transformer = CanvasHelpers.toggleTag;
         } else if (lockedTags.find((t) => t === tag)) {
             // Tag added to locked tags while region(s) selected
@@ -206,30 +197,42 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
     public zoomIn = async () => {
         console.log("Zoom in button clicked!");
 
-        //this.editor.ZM.callbacks.onZoomingIn();
+        // this.editor.ZM.callbacks.onZoomingIn();
 
-        //Zooming without using callbacks onZoomingIn() method
+        // Zooming without using callbacks onZoomingIn() method
+
+        this.editor.ZM.isZoomEnabled = true;
+        this.editor.ZM.setMaxZoomScale(10);
+
         this.editor.ZM.zoomType = 1;
-        var currentZoomLevel = this.editor.ZM.callbacks.getZoomLevel();
-        var newLvl = currentZoomLevel + 0.5;
+        const currentZoomLevel = this.editor.ZM.callbacks.getZoomLevel();
+        const newLvl = currentZoomLevel + 0.5;
         this.editor.ZM.callbacks.setZoomLevel(newLvl);
 
         console.log("Zoom Level: " + this.editor.ZM.callbacks.getZoomLevel());
+
+        this.editor.ZM.isZoomEnabled = false;
     }
 
     public zoomOut = async () => {
         console.log("Zoom out button clicked!");
 
-        //this.editor.ZM.callbacks.onZoomingOut();
+        // this.editor.ZM.callbacks.onZoomingOut();
 
-        //Zooming without using callbacks onZoomingIn() method
+        // Zooming without using callbacks onZoomingOut() method
+
+        this.editor.ZM.isZoomEnabled = true;
+        this.editor.ZM.setMaxZoomScale(10);
+
         this.editor.ZM.zoomType = 2;
-        var currentZoomLevel = this.editor.ZM.callbacks.getZoomLevel();
-        var newLvl = currentZoomLevel - 0.5;
+        const currentZoomLevel = this.editor.ZM.callbacks.getZoomLevel();
+        const newLvl = currentZoomLevel - 0.5;
         this.editor.ZM.callbacks.setZoomLevel(newLvl);
 
         console.log("Zoom Level: " + this.editor.ZM.callbacks.getZoomLevel());
-    }    
+
+        this.editor.ZM.isZoomEnabled = false;
+    }
 
     public confirmRemoveAllRegions = () => {
         this.clearConfirm.current.open();
@@ -240,24 +243,6 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
 
         return this.state.currentAsset.regions.filter((r) => selectedRegions.find((id) => r.id === id));
     }
-
-    // public getSelectedRegions = (id): IRegion[] => {
-      
-    //     const selectedRegions = this.editor.RM.getSelectedRegions();
-
-    //     var currentSelectedRegion;
-
-
-    //     selectedRegions.forEach(region => {
-    //         console.log("Selected Region info: " + region.id + " " + region.tags + " " + region.regionData);
-    //         if (region.id === id) {
-    //             return region;
-    //         }
-    //     });
-
-    //     //return this.state.currentAsset.regions.filter((r) => selectedRegions.find((id) => r.id === id));
-
-    // }
 
     public updateCanvasToolsRegionTags = (): void => {
         for (const region of this.state.currentAsset.regions) {
@@ -331,10 +316,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
      */
     private onSelectionEnd = (regionData: RegionData) => {
 
-        console.log("onSelectionEnd: New regions is drawned");
-
         if (CanvasHelpers.isEmpty(regionData)) {
-            console.log("onSelectionEnd: Region Empty");
             return;
         }
         const id = shortid.generate();
@@ -363,21 +345,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
             points: scaledRegionData.points,
         };
 
-        console.log("newRegion Info = ");
-        console.log("id: " + newRegion.id);
-        console.log("type: " + newRegion.type);
-        console.log("tags: ");
-        newRegion.tags.forEach(tag => {
-            console.log("tag: " + tag);
-        });
-        console.log("bounding box height: " + newRegion.boundingBox.height);
-        console.log("bounding box width: " + newRegion.boundingBox.width);
-        console.log("bounding box left: " + newRegion.boundingBox.left);
-        console.log("bounding box top: " + newRegion.boundingBox.top);
-        console.log("points: " + newRegion.points);
-
         if (lockedTags && lockedTags.length) {
-            console.log("inside lockedTags && lockedTags.length = " + lockedTags[0] + " w/ total length = " + lockedTags.length);
             this.editor.RM.updateTagsById(id, CanvasHelpers.getTagsDescriptor(this.props.project.tags, newRegion));
         }
         this.updateAssetRegions([...this.state.currentAsset.regions, newRegion]);
@@ -410,8 +378,6 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
      * @returns {void}
      */
     private onRegionMoveEnd = (id: string, regionData: RegionData) => {
-        console.log("Regions moved in the editor");
-
         const currentRegions = this.state.currentAsset.regions;
         const movedRegionIndex = currentRegions.findIndex((region) => region.id === id);
         const movedRegion = currentRegions[movedRegionIndex];
@@ -442,9 +408,6 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
      */
     private onRegionDelete = (id: string) => {
         // Remove from Canvas Tools
-
-        console.log("onRegionDelete: w/ id = " + id);
-
         this.editor.RM.deleteRegionById(id);
 
         // Remove from project
@@ -458,84 +421,7 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
         }
     }
 
-    // private makeRegion = (id, tags, regionData) {
-    //     //const regionData = CanvasHelpers.getRegionData(region);
-    //     const scaledRegionData = this.editor.scaleRegionToFrameSize(
-    //         regionData,
-    //         this.state.currentAsset.asset.size.width,
-    //         this.state.currentAsset.asset.size.height);
-    //     this.editor.RM.addRegion(
-    //         id,
-    //         scaledRegionData,
-    //         tags,
-    //     );
-
-    //     return region;
-    // }
-
     /**
-     * Method called when selecting a region from the editor
-     * @param {string} id the id of the selected region
-     * @param {boolean} multiSelect boolean whether region was selected with multi selection
-     * @returns {void}
-     */
-    /*
-    private onRegionSelected = (id: string, multiSelect: boolean) => {
-
-        console.log("OnRegionSelected: w/ id = " + id);
-
-        const selectedRegions1 = this.editor.RM.getSelectedRegions();
-        const selectedRegions2 = this.editor.RM.getSelectedRegionsWithZoomScale();
-        console.log("after line - selectedRegions1..2...");
-        console.log("SelectedRegions1 Length = " + selectedRegions1.length);
-        console.log("SelectedRegions2 Length = " + selectedRegions2.length);
-
-        const allRegions = this.editor.RM.getAllRegions();
-        console.log("All Regions Length: " + allRegions.length);
-
-        var selectedRegions;//: IRegion[];
-
-        allRegions.forEach(region => {
-            console.log("Region info: " + region.id + " " + region.tags + " " + region.regionData);
-
-            if (region.id == id) {
-                //this.editor.RM.selectRegionById(id);
-                //selectedRegions.push(this.editor.RM.selectRegionById(id));
-                selectedRegions = region;
-            }
-        });
-
-        console.log("Current Selected Region info: \n" + selectedRegions.id + " \n" + selectedRegions.tags + " \n" + selectedRegions.regionData);
-
-        return;
-
-        //const selectedRegions = this.getSelectedRegions();
-
-
-        //const selectedRegions = this.getSelectedRegions();
-
-//        if (this.props.onSelectedRegionsChanged) {
-//            this.props.onSelectedRegionsChanged(selectedRegions);
-//        }
-        // Gets the scaled region data
-        //const selectedRegionsData = this.editor.RM.getSelectedRegionsBounds().find((region) => region.id === id);
-
-        //const selectedRegionsData = this.editor.RM.getSelectedRegions().find((region) => region.id === id);
-
-        if (selectedRegions) {
-            this.template = new Rect(selectedRegions.width, selectedRegions.height);
-        }
-
-        if (this.props.lockedTags && this.props.lockedTags.length) {
-            for (const selectedRegion of selectedRegions) {
-                selectedRegion.tags = CanvasHelpers.addAllIfMissing(selectedRegion.tags, this.props.lockedTags);
-            }
-            this.updateRegions(selectedRegions);
-        }
-    }
-    */
-
-        /**
      * Method called when selecting a region from the editor
      * @param {string} id the id of the selected region
      * @param {boolean} multiSelect boolean whether region was selected with multi selection
@@ -560,77 +446,6 @@ export default class Canvas extends React.Component<ICanvasProps, ICanvasState> 
             this.updateRegions(selectedRegions);
         }
     }
-    
-    /*
-    private onRegionSelected = (id: string, multiSelect: boolean) => {
-        const selectedRegions = this.editor.RM.getAllRegions();
-
-        console.log("onRegionSelected: region is selected");
-        console.log("selectedRegions Length = " + selectedRegions.length);
-
-        var selectedRegionsData;
-
-        var id: string;
-        var type: string;
-        var tags: string[];
-        
-        //var points: IPoint[];
-        //var boundingBox: IBoundingBox;
-
-        //boundingBox
-        var left: number;
-        var top: number;
-        var width: number;
-        var height: number;
-
-        //iPoint
-        var x: number;
-        var y: number;
-        
-
-        selectedRegions.forEach(region => {
-            if (region.id === id) {
-                selectedRegionsData = region.regionData;
-                tags.push(region.tags.primary.name);
-                type = "RECTANGLE";
-                left = region.regionData.area.
-
-            }
-        });
-
-
-        this.editor.RM.addRegion(id, selectedRegionsData , tags);
-        console.log("Added to the region!");
-
-        const selectedRegions2 = this.editor.RM.getAllRegions();
-        console.log("selectedRegions Length = " + selectedRegions2.length);
-
-        var selectedRegionIRegions : IRegion[];
-        var iRegion : IRegion;
-
-        iRegion.id = id;
-        iRegion.type = 
-
-
-        if (this.props.onSelectedRegionsChanged) {
-            this.props.onSelectedRegionsChanged(selectedRegions);
-        }
-
-
-
-        if (selectedRegionsData) {
-            //this.template = new Rect(selectedRegionsData.width, selectedRegionsData.height);
-            this.template = new Rect(selectedRegionsData.boundingBox.width, selectedRegionsData.boundingBox.height);
-        }
-
-        if (this.props.lockedTags && this.props.lockedTags.length) {
-            for (const selectedRegion of selectedRegions) {
-                selectedRegion.tags = CanvasHelpers.addAllIfMissing(selectedRegion.tags, this.props.lockedTags);
-            }
-            this.updateRegions(selectedRegions);
-        }
-    } */
-    
 
     private renderChildren = () => {
         return React.cloneElement(this.props.children, {
