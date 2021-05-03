@@ -2,11 +2,17 @@
 ## GeoTIFF Conversion Python Application
 
 ### Dependencies
+ - Python 3.7
+ - TensorFlow 1.13.1
+ - Keras 2.0.8
+ - GDAL (pip install GDAL-3.2.2-cp37-cp37m-win_amd64.whl)
+ - mask-rcnn (python setup.py install)
  - Tkinter (comes standard in Python 3.X)
  - GDAL:
 	 - Ubuntu:
 		> sudo apt-get install gdal-bin
 		> sudo apt-get install libgdal-dev
+  - 
 		
 - Sci-kit Image:
 >pip3 install scikit-image
@@ -14,9 +20,24 @@
 - matplotlib:
 >pip3 install matplotlib 
 
+- numpy
+- json
+- glob
+- cv2
+
 <br/><br/>
 
 ### Instructions
+
+User needs to install Tensorflow and Keras as above, so python3.7 is needed
+GDAL needs to be installed as above, a whl file is included if needed in the git repo
+mask-rcnn needs to be installed as above, setup.py is in the git repo 
+
+Have matching folders with VoTT. Connection == Source Connection, Project == Target Connection
+Select Import Tags
+Select row in the text box of the tags to train on then press Train Model
+Predict Image is now chosen of an image that has a JSON file in the Connection folder
+Export Tags to VoTT after Predict Image will replace that JSON file
 
 Already, we knew that we had to have a way to import these GeoTIFF 
 images into our application and into VoTT. This is presently done both via an "Import" and an "Open" button within the Python application.
