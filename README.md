@@ -32,6 +32,9 @@
 User needs to install Tensorflow and Keras as above, so python3.7 is needed
 GDAL needs to be installed as above, a whl file is included if needed in the git repo
 mask-rcnn needs to be installed as above, setup.py is in the git repo 
+user needs to download pretrained weights for initialization of weights, mask_rcnn_ from, too large to includ ein 
+	https://github.com/matterport/Mask_RCNN/releases/download/v2.0/mask_rcnn_coco.h5
+
 
 Have matching folders with VoTT. Connection == Source Connection, Project == Target Connection
 Select Import Tags
